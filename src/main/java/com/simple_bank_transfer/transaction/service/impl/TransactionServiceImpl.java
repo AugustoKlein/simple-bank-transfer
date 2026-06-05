@@ -1,5 +1,7 @@
 package com.simple_bank_transfer.transaction.service.impl;
 
+import com.simple_bank_transfer.account.mapper.AccountMapper;
+import com.simple_bank_transfer.account.repository.entity.Account;
 import com.simple_bank_transfer.account.service.AccountService;
 import com.simple_bank_transfer.infra.exception.BusinessException;
 import com.simple_bank_transfer.notification.dto.NotificationMessage;
@@ -9,9 +11,12 @@ import com.simple_bank_transfer.transaction.mapper.TransactionMapper;
 import com.simple_bank_transfer.transaction.repository.TransactionRepository;
 import com.simple_bank_transfer.transaction.repository.entity.Transaction;
 import com.simple_bank_transfer.transaction.service.TransactionService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -64,5 +69,17 @@ public class TransactionServiceImpl implements TransactionService {
                         transactionDto.amountTransferred()))
                 .accountId(transactionDto.accountReceiverId())
                 .build();
+    }
+
+    @Override
+    public Page<TransactionDto> findAll(Pageable pageable) {
+        return transactionRepository.findAll(pageable)
+                .map(TransactionMapper::toTransactionDto);
+    }
+
+    @Override
+    public TransactionDto find(Long id) {
+        Transaction transaction = transactionRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return TransactionMapper.toTransactionDto(transaction);
     }
 }

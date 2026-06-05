@@ -8,6 +8,8 @@ import com.simple_bank_transfer.account.service.AccountService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,6 +56,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean exists(Long id) {
         return accountRepository.existsById(id);
+    }
+
+    @Override
+    public Page<AccountDto> findAll(Pageable pageable) {
+        return accountRepository.findAll(pageable)
+                .map(AccountMapper::toAccountDto);
     }
 
 }
