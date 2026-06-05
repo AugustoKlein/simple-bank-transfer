@@ -4,5 +4,5 @@ import lombok.Builder;
 import lombok.NonNull;
 
 @Builder
-public record AccountRequest(@NonNull String name, @NonNull Integer balance) {
+public record AccountRequest(@NonNull String name, @NonNull Long balance) {
 }

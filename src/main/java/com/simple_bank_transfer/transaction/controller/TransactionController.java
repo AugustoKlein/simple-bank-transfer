@@ -1,7 +1,8 @@
 package com.simple_bank_transfer.transaction.controller;
 
-import com.simple_bank_transfer.account.dto.AccountRequest;
-import com.simple_bank_transfer.account.mapper.AccountMapper;
+import com.simple_bank_transfer.transaction.dto.TransactionRequest;
+import com.simple_bank_transfer.transaction.mapper.TransactionMapper;
+import com.simple_bank_transfer.transaction.service.TransactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +20,8 @@ public class TransactionController {
     private TransactionService transactionService;
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody AccountRequest accountRequest) {
-        Long id = accountService.create(AccountMapper.toAccountDto(accountRequest));
-        return ResponseEntity.created(URI.create(String.format("/account/%s", id))).build();
+    public ResponseEntity<Void> create(@RequestBody TransactionRequest transactionRequest) {
+        Long id = transactionService.create(TransactionMapper.toTransactionDto(transactionRequest));
+        return ResponseEntity.created(URI.create(String.format("/transaction/%s", id))).build();
     }
 }

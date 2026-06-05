@@ -1,4 +1,4 @@
-package com.simple_bank_transfer.account.repository.entity;
+package com.simple_bank_transfer.notification.repository.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,13 +11,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Account {
+public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String message;
 
-    private Long balance;
+    @Column(name = "account_id")
+    private Long accountId;
 }

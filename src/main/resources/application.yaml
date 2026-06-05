@@ -1,3 +1,24 @@
 spring:
   application:
     name: simple-bank-transfer
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  datasource:
+    url: jdbc:mysql://mysql-db:3306/bank
+    username: root
+    password: test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+
+  custom-config:
+      rabbitmq:
+        queue: notification-queue.fx
+        exchange: notification-queue.ex
+        routing-key: notification-queue.rk
+

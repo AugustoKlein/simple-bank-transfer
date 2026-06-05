@@ -1,17 +1,24 @@
 services:
-  mysql:
-    image: 'mysql:latest'
-    environment:
-      - 'MYSQL_DATABASE=mydatabase'
-      - 'MYSQL_PASSWORD=secret'
-      - 'MYSQL_ROOT_PASSWORD=verysecret'
-      - 'MYSQL_USER=myuser'
+  mysql-db:
+    image: mysql:8.0
     ports:
-      - '3306'
-  rabbitmq:
-    image: 'rabbitmq:latest'
+      - "3306:3306"
     environment:
-      - 'RABBITMQ_DEFAULT_PASS=secret'
-      - 'RABBITMQ_DEFAULT_USER=myuser'
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: bank
+    volumes:
+      - mysql-data:/var/lib/mysql
+  rabbit-mq:
+    image: rabbitmq:4-management
     ports:
-      - '5672'
+      - "5672:5672"   # AMQP protocol port
+      - "15672:15672" # Management UI port
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  mysql-data:
+  rabbitmq_data:
