@@ -1,0 +1,313 @@
+openapi: 3.0.3
+info:
+  title: Simple bank transfer API
+  version: 1.0.0
+  description: Simple bank transfer API to transfer money from one account to another
+
+paths:
+  /account:
+    post:
+      summary: Create a new account
+      description: Creates a new account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountRequest'
+            example:
+              name: "Jorge"
+              balance: 1000
+      responses:
+        "201":
+          description: Account created successfully.
+          headers:
+            Location:
+              description: URI of the created account.
+              schema:
+                type: string
+                example: /account/1
+        "400":
+          description: Invalid request body.
+
+    get:
+      summary: Retrieve all accounts
+      description: Returns a paginated list of accounts.
+      parameters:
+        - name: page
+          in: query
+          description: Page number (0-based).
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          description: Number of items per page.
+          required: false
+          schema:
+            type: integer
+            default: 20
+        - name: sort
+          in: query
+          description: Sorting criteria.
+          required: false
+          schema:
+            type: string
+            example: id,asc
+      responses:
+        "200":
+          description: List of accounts.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageAccountResponse'
+
+  /account/{id}:
+    get:
+      summary: Retrieve an account by id
+      description: Returns the account associated with the given id.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Account id
+          schema:
+            type: integer
+            format: int64
+
+      responses:
+        "200":
+          description: Account found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        "404":
+          description: Account not found.
+
+  /transaction:
+    post:
+      summary: Create a new transaction by transferring money from one account to another
+      description: Transfers money from one account to another.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+            example:
+              accountSenderId: 1
+              accountReceiverId: 2
+              amountTransferred: 500
+      responses:
+        "201":
+          description: Transaction created successfully.
+          headers:
+            Location:
+              description: URI of the created transaction.
+              schema:
+                type: string
+                example: /transaction/1
+        "400":
+          description: Invalid request
+        "404":
+          description: Sender or receiver account not found.
+    
+    get:
+      summary: Retrieve all transactions
+      description: Returns a paginated list of transactions.
+      parameters:
+        - name: page
+          in: query
+          description: Page number (0-based).
+          required: false
+          schema:
+            type: integer
+            default: 0
+
+        - name: size
+          in: query
+          description: Number of items per page.
+          required: false
+          schema:
+            type: integer
+            default: 20
+
+        - name: sort
+          in: query
+          description: Sorting criteria.
+          required: false
+          schema:
+            type: string
+            example: id,asc
+      
+      responses:
+        "200":
+          description: List of transactions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageTransactionResponse'
+
+  /transaction/{id}:
+      get:
+        summary: Retrieve a transaction by id
+        description: Returns the transaction associated with the given id
+        parameters:
+          - name: id
+            in: path
+            required: true
+            description: Transaction identifier.
+            schema:
+              type: integer
+              format: int64
+
+        responses:
+          "200":
+            description: Transaction found.
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/TransactionResponse'
+
+          "404":
+            description: Transaction not found.
+
+components:
+    schemas:
+      TransactionRequest:
+        type: object
+        required:
+          - accountSenderId
+          - accountReceiverId
+          - amountTransferred
+        properties:
+          accountSenderId:
+            type: integer
+            description: Account number from sender
+            example: 1
+
+          accountReceiverId:
+            type: integer
+            description: Account number from receiver
+            example: 2
+
+          amountTransferred:
+            type: integer
+            description: Amount to be transferred from the sender to the receiver
+            example: 500
+
+      TransactionResponse:
+        type: object
+        properties:
+          id:
+            type: integer
+            description: Transaction Id
+            example: 1
+
+          accountSenderId:
+            type: integer
+            description: Account number from sender
+            example: 1
+
+          accountReceiverId:
+            type: integer
+            description: Account number from receiver
+            example: 2
+
+          amountTransferred:
+            type: integer
+            description: Amount to be transferred from the sender to the receiver
+            example: 500
+
+      PageTransactionResponse:
+        type: object
+        properties:
+          content:
+            type: array
+            items:
+              $ref: '#/components/schemas/TransactionResponse'
+          pageable:
+            type: object
+          totalElements:
+            type: integer
+            example: 100
+          totalPages:
+            type: integer
+            example: 5
+          size:
+            type: integer
+            example: 20
+          number:
+            type: integer
+            example: 0
+          first:
+            type: boolean
+            example: true
+          last:
+            type: boolean
+            example: false
+          empty:
+            type: boolean
+            example: false
+
+      AccountRequest:
+        type: object
+        required:
+          - name
+          - balance
+        properties:
+          name:
+            type: string
+            example: "Jorge"
+          balance:
+            type: integer
+            description: Value amount of money in cents
+            example: 1000
+
+      AccountResponse:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int64
+            example: 1
+          name:
+            type: string
+            example: "Jorge"
+          balance:
+            type: integer
+            description: Value amount of money in cents
+            example: 1000
+
+      PageAccountResponse:
+        type: object
+        properties:
+          content:
+            type: array
+            items:
+              $ref: '#/components/schemas/AccountResponse'
+          pageable:
+            type: object
+          totalElements:
+            type: integer
+            example: 100
+          totalPages:
+            type: integer
+            example: 5
+          size:
+            type: integer
+            example: 20
+          number:
+            type: integer
+            example: 0
+          first:
+            type: boolean
+            example: true
+          last:
+            type: boolean
+            example: false
+          empty:
+            type: boolean
+            example: false
