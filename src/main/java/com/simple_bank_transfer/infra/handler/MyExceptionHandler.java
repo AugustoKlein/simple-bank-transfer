@@ -1,6 +1,8 @@
 package com.simple_bank_transfer.infra.handler;
 
 import com.simple_bank_transfer.infra.dto.ErrorDto;
+import com.simple_bank_transfer.infra.exception.AccountReceiverNotFoundException;
+import com.simple_bank_transfer.infra.exception.AccountSenderNotFoundException;
 import com.simple_bank_transfer.infra.exception.BusinessException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -34,4 +36,21 @@ public class MyExceptionHandler {
                 .message(exception.getMessage())
                 .build();
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(AccountSenderNotFoundException.class)
+    public ErrorDto handleAccountSenderNotFoundException(AccountSenderNotFoundException exception) {
+        return ErrorDto.builder()
+                .message(exception.getMessage())
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(AccountReceiverNotFoundException.class)
+    public ErrorDto handleAccountReceiverNotFoundException(AccountSenderNotFoundException exception) {
+        return ErrorDto.builder()
+                .message(exception.getMessage())
+                .build();
+    }
+
 }

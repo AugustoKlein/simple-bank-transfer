@@ -1,5 +1,6 @@
 package com.simple_bank_transfer.notification.repository.entity;
 
+import com.simple_bank_transfer.notification.enums.StatusEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,4 +22,8 @@ public class Notification {
 
     @Column(name = "account_id")
     private Long accountId;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private StatusEnum status;
 }

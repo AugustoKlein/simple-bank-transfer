@@ -3,8 +3,12 @@ package com.simple_bank_transfer.transaction.service.impl;
 import com.simple_bank_transfer.account.mapper.AccountMapper;
 import com.simple_bank_transfer.account.repository.entity.Account;
 import com.simple_bank_transfer.account.service.AccountService;
+import com.simple_bank_transfer.infra.exception.AccountReceiverNotFoundException;
+import com.simple_bank_transfer.infra.exception.AccountSenderNotFoundException;
 import com.simple_bank_transfer.infra.exception.BusinessException;
+import com.simple_bank_transfer.notification.dto.NotificationDto;
 import com.simple_bank_transfer.notification.dto.NotificationMessage;
+import com.simple_bank_transfer.notification.enums.StatusEnum;
 import com.simple_bank_transfer.notification.service.NotificationService;
 import com.simple_bank_transfer.transaction.dto.TransactionDto;
 import com.simple_bank_transfer.transaction.mapper.TransactionMapper;
@@ -26,8 +30,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     private static final String NOTIFICATION_MESSAGE = "Account number: %s sent you %02d $";
 
-    private static final String EXCEPTION_MESSAGE = "%s account number does not exist";
-
     private TransactionRepository transactionRepository;
 
     private NotificationService notificationService;
@@ -40,11 +42,11 @@ public class TransactionServiceImpl implements TransactionService {
         log.info("Create transaction");
 
         if (!accountService.exists(transactionDto.accountReceiverId())) {
-            accountNotFoundException("receiver");
+            throw new AccountReceiverNotFoundException();
         }
 
         if (!accountService.exists(transactionDto.accountSenderId())) {
-            accountNotFoundException("sender");
+            throw new AccountSenderNotFoundException();
         }
 
         Transaction transaction = transactionRepository.save(TransactionMapper.toTransaction(transactionDto));
@@ -53,21 +55,18 @@ public class TransactionServiceImpl implements TransactionService {
 
         accountService.decreaseBalance(transaction.getAccountSenderId(), transactionDto.amountTransferred() );
 
-        notificationService.send(createNotification(transactionDto));
+        notificationService.create(createNotification(transactionDto));
 
         return transaction.getId();
     }
 
-    private void accountNotFoundException(String field) {
-        throw new BusinessException(String.format(EXCEPTION_MESSAGE, field));
-    }
-
-    private NotificationMessage createNotification(TransactionDto transactionDto) {
-        return NotificationMessage.builder()
+    private NotificationDto createNotification(TransactionDto transactionDto) {
+        return NotificationDto.builder()
                 .message(String.format(NOTIFICATION_MESSAGE,
                         transactionDto.accountSenderId(),
                         transactionDto.amountTransferred()))
                 .accountId(transactionDto.accountReceiverId())
+                .status(StatusEnum.PENDING)
                 .build();
     }
 

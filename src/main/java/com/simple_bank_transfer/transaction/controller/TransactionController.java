@@ -27,7 +27,7 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<TransactionDto>> getAll(@PageableDefault(size = 10, sort = "id") Pageable pageable) {
+    public ResponseEntity<Page<TransactionDto>> getAll(@PageableDefault(sort = "id") Pageable pageable) {
         return ResponseEntity.ok(transactionService.findAll(pageable));
     }
 

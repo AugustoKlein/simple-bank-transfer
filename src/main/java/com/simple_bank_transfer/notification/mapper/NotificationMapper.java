@@ -13,14 +13,14 @@ public final class NotificationMapper {
         return Notification.builder()
                 .message(notificationDto.message())
                 .accountId(notificationDto.accountId())
+                .status(notificationDto.status())
                 .build();
     }
 
-    public static NotificationDto toNotificationDto(NotificationMessage notificationMessage) {
-        return NotificationDto.builder()
-                .message(notificationMessage.getMessage())
-                .accountId(notificationMessage.getAccountId())
+    public static NotificationMessage toNotificationMessage(Notification notification) {
+        return NotificationMessage.builder()
+                .message(notification.getMessage())
+                .accountId(notification.getAccountId())
                 .build();
     }
-
 }

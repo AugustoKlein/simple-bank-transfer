@@ -22,6 +22,7 @@ CREATE TABLE notification
     id         BIGINT       NOT NULL AUTO_INCREMENT,
     message    VARCHAR(255) NOT NULL,
     account_id BIGINT       NOT NULL,
+    status     ENUM('PENDING', 'SENT') default 'PENDING',
     PRIMARY KEY (id),
     CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES account (id)
 );

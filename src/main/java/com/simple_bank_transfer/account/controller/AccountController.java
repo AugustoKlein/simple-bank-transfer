@@ -27,7 +27,7 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<AccountDto>> getAll(@PageableDefault(size = 10, sort = "id") Pageable pageable) {
+    public ResponseEntity<Page<AccountDto>> getAll(@PageableDefault(sort = "id") Pageable pageable) {
         return ResponseEntity.ok(accountService.findAll(pageable));
     }
 

@@ -32,6 +32,7 @@ public final class TransactionStub {
                 .accountReceiverId(1L)
                 .accountSenderId(2L)
                 .accountReceiverId(10L)
+                .amountTransferred(10L)
                 .build();
     }
 }

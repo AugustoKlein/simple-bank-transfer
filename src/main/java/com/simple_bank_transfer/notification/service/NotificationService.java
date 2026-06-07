@@ -7,4 +7,6 @@ public interface NotificationService {
     void send(NotificationMessage notificationMessage);
 
     Long create(NotificationDto notificationDto);
+
+    void checkPendingNotifications();
 }

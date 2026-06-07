@@ -13,7 +13,7 @@ public interface AccountService {
 
     void decreaseBalance(Long id, Long amount);
 
-    boolean exists(Long id);
+    Boolean exists(Long id);
 
     Page<AccountDto> findAll(Pageable pageable);
 }

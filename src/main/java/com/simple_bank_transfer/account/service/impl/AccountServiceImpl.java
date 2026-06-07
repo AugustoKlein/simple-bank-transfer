@@ -12,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -54,7 +52,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public boolean exists(Long id) {
+    public Boolean exists(Long id) {
         return accountRepository.existsById(id);
     }
 
