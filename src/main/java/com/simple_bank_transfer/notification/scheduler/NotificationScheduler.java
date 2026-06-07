@@ -12,7 +12,7 @@ public class NotificationScheduler {
     private NotificationService notificationService;
 
     @Scheduled(fixedDelay = 5000)
-    public void sendPendingNotifications() {
+    public void checkPendingNotifications() {
         notificationService.checkPendingNotifications();
     }
 }

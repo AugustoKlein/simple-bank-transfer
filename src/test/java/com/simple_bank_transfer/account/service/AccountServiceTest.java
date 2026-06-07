@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@DisplayName("Game Service Test")
+@DisplayName("Account Service Test")
 @ExtendWith(MockitoExtension.class)
 class AccountServiceTest {
     public static final String DEFAULT_ERROR_MESSAGE = "something went wrong";
@@ -65,7 +65,7 @@ class AccountServiceTest {
     @DisplayName("Find")
     class Find {
         @Test
-        @DisplayName("Should find account")
+        @DisplayName("Should find account by id")
         public void findSuccess() {
             when(accountRepository.findById(anyLong())).thenReturn(Optional.of(AccountStub.account()));
 

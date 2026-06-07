@@ -1,6 +1,7 @@
 package com.simple_bank_transfer.notification.service.impl;
 
 import com.simple_bank_transfer.infra.configuration.RabbitMQConfiguration;
+import com.simple_bank_transfer.infra.exception.BusinessException;
 import com.simple_bank_transfer.notification.dto.NotificationDto;
 import com.simple_bank_transfer.notification.dto.NotificationMessage;
 import com.simple_bank_transfer.notification.enums.StatusEnum;
@@ -10,6 +11,7 @@ import com.simple_bank_transfer.notification.repository.entity.Notification;
 import com.simple_bank_transfer.notification.service.NotificationService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +29,14 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void send(NotificationMessage notificationMessage) {
-        rabbitTemplate.convertAndSend(
-                rabbitMQConfiguration.getExchange(),
-                rabbitMQConfiguration.getRoutingKey(),
-                notificationMessage);
+        try {
+            rabbitTemplate.convertAndSend(
+                    rabbitMQConfiguration.getExchange(),
+                    rabbitMQConfiguration.getRoutingKey(),
+                    notificationMessage);
+        } catch (AmqpException exception) {
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
@@ -46,7 +52,7 @@ public class NotificationServiceImpl implements NotificationService {
         List<Notification> pendingNotifications = notificationRepository.findAllByStatus(StatusEnum.PENDING);
 
         if (!pendingNotifications.isEmpty()) {
-            for (Notification notification: pendingNotifications) {
+            for (Notification notification : pendingNotifications) {
                 send(NotificationMapper.toNotificationMessage(notification));
 
                 notification.setStatus(StatusEnum.SENT);
@@ -55,7 +61,6 @@ public class NotificationServiceImpl implements NotificationService {
             }
         }
     }
-
 
 
 }

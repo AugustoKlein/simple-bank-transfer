@@ -1,13 +1,9 @@
 package com.simple_bank_transfer.transaction.service.impl;
 
-import com.simple_bank_transfer.account.mapper.AccountMapper;
-import com.simple_bank_transfer.account.repository.entity.Account;
 import com.simple_bank_transfer.account.service.AccountService;
 import com.simple_bank_transfer.infra.exception.AccountReceiverNotFoundException;
 import com.simple_bank_transfer.infra.exception.AccountSenderNotFoundException;
-import com.simple_bank_transfer.infra.exception.BusinessException;
 import com.simple_bank_transfer.notification.dto.NotificationDto;
-import com.simple_bank_transfer.notification.dto.NotificationMessage;
 import com.simple_bank_transfer.notification.enums.StatusEnum;
 import com.simple_bank_transfer.notification.service.NotificationService;
 import com.simple_bank_transfer.transaction.dto.TransactionDto;
@@ -53,7 +49,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         accountService.increaseBalance(transaction.getAccountReceiverId(), transactionDto.amountTransferred());
 
-        accountService.decreaseBalance(transaction.getAccountSenderId(), transactionDto.amountTransferred() );
+        accountService.decreaseBalance(transaction.getAccountSenderId(), transactionDto.amountTransferred());
 
         notificationService.create(createNotification(transactionDto));
 

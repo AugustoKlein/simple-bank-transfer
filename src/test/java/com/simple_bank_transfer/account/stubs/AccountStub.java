@@ -17,13 +17,6 @@ public final class AccountStub {
                 .build();
     }
 
-    public static AccountRequest accountRequest() {
-        return AccountRequest.builder()
-                .name("John")
-                .balance(100L)
-                .build();
-    }
-
     public static AccountDto accountDto() {
         return AccountDto.builder()
                 .id(1L)
