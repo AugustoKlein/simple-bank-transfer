@@ -5,6 +5,8 @@ import com.simple_bank_transfer.account.mapper.AccountMapper;
 import com.simple_bank_transfer.account.repository.AccountRepository;
 import com.simple_bank_transfer.account.repository.entity.Account;
 import com.simple_bank_transfer.account.service.AccountService;
+import com.simple_bank_transfer.infra.exception.BusinessException;
+import com.simple_bank_transfer.infra.exception.InsufficientBalanceToTransfer;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +47,12 @@ public class AccountServiceImpl implements AccountService {
     public void decreaseBalance(Long id, Long amount) {
         Account account = accountRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
-        Long newBalance = account.getBalance() - amount;
+        long newBalance = account.getBalance() - amount;
+
+        if (newBalance < 0) {
+            throw new InsufficientBalanceToTransfer();
+        }
+
         account.setBalance(newBalance);
 
         accountRepository.save(account);

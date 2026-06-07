@@ -1,9 +1,9 @@
 package com.simple_bank_transfer.infra.exception;
 
-public class AccountSenderNotFoundException extends RuntimeException {
-    private static final String DEFAULT_MESSAGE = "Sender account number does not exist";
+public class InsufficientBalanceToTransfer extends RuntimeException {
+    private static final String DEFAULT_MESSAGE = "Not enough balance to transfer this amount";
 
-    public AccountSenderNotFoundException() {
+    public InsufficientBalanceToTransfer() {
         super(DEFAULT_MESSAGE);
     }
 }

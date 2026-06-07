@@ -5,6 +5,7 @@ import com.simple_bank_transfer.account.repository.AccountRepository;
 import com.simple_bank_transfer.account.repository.entity.Account;
 import com.simple_bank_transfer.account.service.impl.AccountServiceImpl;
 import com.simple_bank_transfer.account.stubs.AccountStub;
+import com.simple_bank_transfer.infra.exception.InsufficientBalanceToTransfer;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -173,8 +174,19 @@ class AccountServiceTest {
             verify(accountRepository).findById(any());
             verify(accountRepository).save(any());
         }
+
+        @Test
+        @DisplayName("Should throw InsufficientBalanceToTransfer when the account does not have enough balance")
+        public void decreaseBalanceInsufficientBalanceToTransfer() {
+            when(accountRepository.findById(anyLong())).thenReturn(Optional.of(AccountStub.account()));
+
+            assertThrows(InsufficientBalanceToTransfer.class, () -> accountService.decreaseBalance(1L, 99999L));
+
+            verify(accountRepository).findById(any());
+            verify(accountRepository, times(0)).save(any());
+        }
     }
-    
+
     @Nested
     @DisplayName("Exists")
     class Exists {
@@ -183,7 +195,7 @@ class AccountServiceTest {
         void exists() {
             when(accountRepository.existsById(anyLong())).thenReturn(anyBoolean());
 
-           Boolean exists = accountService.exists(1L);
+            Boolean exists = accountService.exists(1L);
 
             assertNotNull(exists);
             verify(accountRepository).existsById(anyLong());
@@ -202,7 +214,6 @@ class AccountServiceTest {
 
             when(accountRepository.findAll(any(Pageable.class))).thenReturn(expectedPage);
 
-            Long id = 1L;
             Page<AccountDto> accountDtoPage = accountService.findAll(pageable);
 
             assertNotNull(accountDtoPage);

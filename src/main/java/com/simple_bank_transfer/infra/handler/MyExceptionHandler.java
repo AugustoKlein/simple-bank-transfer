@@ -4,6 +4,7 @@ import com.simple_bank_transfer.infra.dto.ErrorDto;
 import com.simple_bank_transfer.infra.exception.AccountReceiverNotFoundException;
 import com.simple_bank_transfer.infra.exception.AccountSenderNotFoundException;
 import com.simple_bank_transfer.infra.exception.BusinessException;
+import com.simple_bank_transfer.infra.exception.InsufficientBalanceToTransfer;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -53,4 +54,11 @@ public class MyExceptionHandler {
                 .build();
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InsufficientBalanceToTransfer.class)
+    public ErrorDto handleInsufficientBalanceToTransfer(InsufficientBalanceToTransfer exception) {
+        return ErrorDto.builder()
+                .message(exception.getMessage())
+                .build();
+    }
 }
