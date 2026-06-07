@@ -16,6 +16,10 @@ git clone https://github.com/AugustoKlein/simple-bank-transfer.git
 
 Uma API simples de envio de dinheiro de uma conta para outra.
 
+### Documentação Swagger
+
+- Documento Swagger: [swagger.yaml](swagger.yaml)
+
 ### Banco de dados
 
 - Banco de dados: MySQL
